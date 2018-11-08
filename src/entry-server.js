@@ -7,7 +7,7 @@ const isDev = process.env.NODE_ENV !== 'production'
 // state of our application before actually rendering it.
 // Since data fetching is async, this function is expected to
 // return a Promise that resolves to the app instance.
-export default context => {
+export default context => { // 出口的方法 其实就是 renderer.renderToString   // renderer.renderToString(context,(err,html)=>res.send(html))
   return new Promise((resolve, reject) => {
     const s = isDev && Date.now()
     const { app, router, store } = createApp()
@@ -20,14 +20,14 @@ export default context => {
     }
 
     // set router's location
-    router.push(url)
+    router.push(url) // 路由跳转  这里的router 是刚刚创建的router 对象  所以没有指定路由位置 需要手动跳转
 
-    // wait until router has resolved possible async hooks
+    // wait until router has resolved possible async hooks // 等到 router 将可能的异步组件和钩子函数解析完
     router.onReady(() => {
-      const matchedComponents = router.getMatchedComponents()
-      // no matched routes
+      const matchedComponents = router.getMatchedComponents() // 这里没传入参数是因为push了一个路由 直接返回当前匹配到的路由
+      // no matched routes  // 匹配不到的路由，执行 reject 函数，并返回 404
       if (!matchedComponents.length) {
-        return reject({ code: 404 })
+        return reject({ code: 404 }) // 这里的reject  会返回给 renderer.renderToString 返回一个错误对象
       }
       // Call fetchData hooks on components matched by the route.
       // A preFetch hook dispatches a store action and returns a Promise,
@@ -44,7 +44,7 @@ export default context => {
         // inline the state in the HTML response. This allows the client-side
         // store to pick-up the server-side state without having to duplicate
         // the initial data fetching on the client.
-        context.state = store.state
+        context.state = store.state   // 状态将自动序列化为 `window.__INITIAL_STATE__`，并注入 HTML。
         resolve(app)
       }).catch(reject)
     }, reject)

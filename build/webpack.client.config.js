@@ -2,7 +2,7 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 const base = require('./webpack.base.config')
 const SWPrecachePlugin = require('sw-precache-webpack-plugin')
-const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
+const VueSSRClientPlugin = require('vue-server-renderer/client-plugin') // <= 客户端最大的区别就是这个把
 
 const config = merge(base, {
   entry: {
@@ -41,7 +41,7 @@ const config = merge(base, {
   ]
 })
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') { // 生产环境使用service worker 缓存
   config.plugins.push(
     // auto generate service worker
     new SWPrecachePlugin({
@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === 'production') {
       minify: true,
       dontCacheBustUrlsMatching: /./,
       staticFileGlobsIgnorePatterns: [/\.map$/, /\.json$/],
-      runtimeCaching: [
+      runtimeCaching: [ // 估计是缓存以下URL
         {
           urlPattern: '/',
           handler: 'networkFirst'
