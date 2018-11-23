@@ -1,17 +1,21 @@
+//======================================== 开发用的服务器 ========================================
+
 const fs = require('fs')
 const path = require('path')
 const MFS = require('memory-fs')
 const webpack = require('webpack')
-const chokidar = require('chokidar')
+const chokidar = require('chokidar') // fs.watch 解决watch的bug
 const clientConfig = require('./webpack.client.config')
 const serverConfig = require('./webpack.server.config')
 
+// 安全的同步读取文件
 const readFile = (fs, file) => {
   try {
     return fs.readFileSync(path.join(clientConfig.output.path, file), 'utf-8')
   } catch (e) {}
 }
 
+// 安装开发服务器
 module.exports = function setupDevServer (app, templatePath, cb) {
   let bundle
   let template
@@ -19,9 +23,10 @@ module.exports = function setupDevServer (app, templatePath, cb) {
 
   let ready
   const readyPromise = new Promise(r => { ready = r })
+  // 更新视图
   const update = () => {
     if (bundle && clientManifest) {
-      ready()
+      ready()//  触发上面的resolve()
       cb(bundle, {
         template,
         clientManifest
