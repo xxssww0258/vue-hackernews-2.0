@@ -1,3 +1,5 @@
+//======================================== 这个是正常的webpack 入口文件 ========================================
+// 爱怎么写就怎么写 不需要返回
 import Vue from 'vue'
 import 'es6-promise/auto'
 import { createApp } from './app'

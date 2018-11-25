@@ -1,7 +1,18 @@
 //======================================== 逻辑 ========================================
-// 不像前端有yarn run dev和 yarn run build
-// 而是统一启动一个express服务器 也可以理解为通过两个不同的环境 处理两个 yarn run dev 的文件 
-// yarn run build 生成两个
+// 我们可以先看一下package.json 的 script
+  // "dev": "node server", //"dev注释":"本地测试服务",
+  // "start": "cross-env NODE_ENV=production node server",//"本地测试生产服务",
+  // "build": "rimraf dist && npm run build:client && npm run build:server",//"编译",
+// 再结合官网的那张图
+  // https://ssr.vuejs.org/zh/guide/structure.html#%E4%BB%8B%E7%BB%8D%E6%9E%84%E5%BB%BA%E6%AD%A5%E9%AA%A4
+  // https://cloud.githubusercontent.com/assets/499550/17607895/786a415a-5fee-11e6-9c11-45a2cfdf085c.png
+// 总体流程就是
+  // 通过webpack 两个入口文件 打包出两个 bundle 一个是被服务处理过的首页预渲染  另一个是正常的前端js
+  // 浏览器第一次打开的时候得到的是预渲染的页面 后面的处理就是正常的vue逻辑
+// scripts 中有两种逻辑
+  // 一种是正常的根据双入口打包
+  // 另一种是通过同一个 setup-dev-server 引入带有环境变量的双入口
+
 const fs = require('fs')
 const path = require('path')
 const LRU = require('lru-cache') // 缓存库
@@ -65,6 +76,7 @@ if (isProd) {
     }
   )
 }
+//---------------------------------------- 下面是正常的服务器接口 ----------------------------------------
 
 const serve = (path, cache) => express.static(resolve(path), {  // 修改暴露静态文件的方法  第二个参数是 设置最长时效
   maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
@@ -84,8 +96,6 @@ app.use('/service-worker.js', serve('./dist/service-worker.js')) // 暴露servic
 // 1-second microcache.
 // https://www.nginx.com/blog/benefits-of-microcaching-nginx/
 app.use(microcache.cacheSeconds(1, req => useMicroCache && req.originalUrl)) // 所有的东西都设置缓存1秒
-
-//========================================  生产环境才暴露 ========================================
 
 function render (req, res) {
   const s = Date.now()
@@ -120,12 +130,12 @@ function render (req, res) {
     }
   })
 }
-//---------------------------------------- 下面是正常的服务器接口 ----------------------------------------
+
 app.get('*', isProd ? render : (req, res) => { // 处理所有的get请求
   readyPromise.then(() => render(req, res))
 })
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8081
 app.listen(port, () => { // 启动服务器
   console.log(`server started at localhost:${port}`)
 })

@@ -27,7 +27,7 @@ module.exports = function setupDevServer (app, templatePath, cb) {
   const update = () => {
     if (bundle && clientManifest) {
       ready()//  触发上面的resolve()
-      cb(bundle, {
+      cb(bundle, { // 这一行先执行 再执行上面的ready 的promise 回调
         template,
         clientManifest
       })

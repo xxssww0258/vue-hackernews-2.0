@@ -1,3 +1,6 @@
+//======================================== 服务端 入口文件 ========================================
+// 需要返回一个 vue 的实例
+// 这里是以一个工厂函数 返回一个promise 异步resolve 返回一个vue
 import { createApp } from './app'
 
 const isDev = process.env.NODE_ENV !== 'production'

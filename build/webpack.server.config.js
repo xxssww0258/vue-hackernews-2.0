@@ -1,3 +1,5 @@
+//======================================== 服务器入口文件 ========================================
+// 这个文件只要正常的导出webpack配置
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const base = require('./webpack.base.config')
