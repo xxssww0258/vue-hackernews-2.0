@@ -10,7 +10,7 @@ const UserView = () => import('../views/UserView.vue')
 
 export function createRouter () {
   return new Router({
-    mode: 'history',
+    mode: 'history', //一定要是history模式
     fallback: false,
     scrollBehavior: () => ({ y: 0 }),
     routes: [

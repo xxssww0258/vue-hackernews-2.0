@@ -1,5 +1,6 @@
 //======================================== 这个是正常的webpack 入口文件 ========================================
 // 爱怎么写就怎么写 不需要返回
+// 但是这里的作用主要是处理asyncData
 import Vue from 'vue'
 import 'es6-promise/auto'
 import { createApp } from './app'

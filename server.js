@@ -13,9 +13,10 @@
   // 一种是正常的根据双入口打包
   // 另一种是通过同一个 setup-dev-server 引入带有环境变量的双入口
 
+//======================================== 这是express的服务 ========================================
 const fs = require('fs')
 const path = require('path')
-const LRU = require('lru-cache') // 缓存库
+const LRU = require('lru-cache') // 缓存库 http://skyhigh233.com/blog/2016/10/07/lru-cache/
 const express = require('express')
 const favicon = require('serve-favicon')
 const compression = require('compression') // 压缩库
@@ -46,7 +47,7 @@ function createRenderer (bundle, options) { // 以默认参数为主 合并 传�
   }))
 }
 
-let renderer // 这里先声明一下  在生产境的时候要使用
+let renderer // 渲染用
 let readyPromise // 这里先声明一下  在开发环境的时候要使用
 
 const templatePath = resolve('./src/index.template.html') // 获得模板文件路径

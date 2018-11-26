@@ -1,3 +1,5 @@
+// ======================================== app实例 ========================================
+// 这里主要是返回app实例的工程函数 更加类似于main.js
 import Vue from 'vue'
 import App from './App.vue'
 import { createStore } from './store'
