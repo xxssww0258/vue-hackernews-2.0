@@ -34,7 +34,7 @@ module.exports = function setupDevServer (app, templatePath, cb) {
     }
   }
 
-  // read template from disk and watch
+  // read template from disk and watch 监听文件修改
   template = fs.readFileSync(templatePath, 'utf-8')
   chokidar.watch(templatePath).on('change', () => {
     template = fs.readFileSync(templatePath, 'utf-8')
@@ -42,7 +42,7 @@ module.exports = function setupDevServer (app, templatePath, cb) {
     update()
   })
 
-  // modify client config to work with hot middleware
+  // modify client config to work with hot middleware 添加 Webpack-hot-middleware
   clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]
   clientConfig.output.filename = '[name].js'
   clientConfig.plugins.push(
@@ -50,7 +50,7 @@ module.exports = function setupDevServer (app, templatePath, cb) {
     new webpack.NoEmitOnErrorsPlugin()
   )
 
-  // dev middleware
+  // dev middleware 添加  webpack-dev-middleware 输出的文件存在于内存中
   const clientCompiler = webpack(clientConfig)
   const devMiddleware = require('webpack-dev-middleware')(clientCompiler, {
     publicPath: clientConfig.output.publicPath,
