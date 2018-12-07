@@ -13,14 +13,14 @@
   // 一种是正常的根据双入口打包
   // 另一种是通过同一个 setup-dev-server 引入带有环境变量的双入口
 
-// server 是一个express
+// server.js 是一个express
 // build/setup-dev-server.js 是一个webpack-dev-server
 // build/webpack.client.config.js 
 // build/webpack.server.config.js  排除掉node  不包含document  Commonjs 
 // src/entry-client  客户端入口 正常js
 // src/entry-server  服务器入口 导出Vue实例
 
-//======================================== 这是express的服务 ========================================
+//======================================== 这是 express 的服务 ========================================
 const fs = require('fs')
 const path = require('path')
 const LRU = require('lru-cache') // 缓存库 http://skyhigh233.com/blog/2016/10/07/lru-cache/
@@ -43,7 +43,7 @@ function createRenderer (bundle, options) { // 以默认参数为主 合并 传�
   // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return createBundleRenderer(bundle, Object.assign(options, {
     // for component caching
-    cache: LRU({
+    cache: LRU({ // 缓存组件的配置
       max: 1000,
       maxAge: 1000 * 60 * 15
     }),
@@ -78,7 +78,7 @@ if (isProd) {
   // and create a new renderer on bundle / index template update.
   readyPromise = require('./build/setup-dev-server')(
     app,
-    templatePath,
+    templatePath,// 这里没有采用前端的 html-webpack-plugin 而是使用传入模版路径通过fs读取文件后 createRenderer 自动生成html
     (bundle, options) => { // 这里的编译是给热更新用的  传给热更新服务器  不断地触发热更新
       renderer = createRenderer(bundle, options)
     }
@@ -140,7 +140,7 @@ function render (req, res) {
 }
 
 app.get('*', isProd ? render : (req, res) => { // 处理所有的get请求
-  readyPromise.then(() => render(req, res))
+  readyPromise.then(() => render(req, res))// 这里之所以用promise 来写开发环境 是为了提取出dev-server
 })
 
 const port = process.env.PORT || 8081
